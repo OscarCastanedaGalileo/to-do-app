@@ -1,6 +1,6 @@
 
-// import { Todos } from './components/todos';
-// import { Goals } from './components/goals';
+//import { Todos } from './Components/todos';
+//import { Goals } from './Components/goals';
 import  Menu  from './Components/Menu/Menu';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import FormTaskAndGoal from './Components/Form/Form';
@@ -12,7 +12,7 @@ import AddingMobileButton from './Components/AddMobileButton/AddMobileButton';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import{
-  addTodo,
+  //addTodo,
   initAddTodo
 } from './reducers/todoSlice'
 
@@ -30,10 +30,11 @@ function App() {
     }
   ]
   useEffect(() => {
-    arr.map((item) => {
+    arr.forEach((item) => {
       dispatch(initAddTodo(item))
     })
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch /* , arr */]);
 
   return (
     <div className="App">

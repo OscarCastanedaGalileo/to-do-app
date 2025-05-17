@@ -9,7 +9,7 @@ export function Goals() {
     const dispatch = useDispatch();
     const todos = useSelector(selectGoals);
     const inputRef = useRef();
-    const addItem = () => {
+    const addItem = (e) => {
         e.preventDefault();
         dispatch(addGoal({'name': inputRef.current.value}))
     }

@@ -1,10 +1,10 @@
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import './Form.scss'
-import { useSelector, useDispatch } from 'react-redux';
+import {  useDispatch } from 'react-redux';
 import { useRef } from "react";
 import {
-  removeTodo,
+  //removeTodo,
   addTodo
 } from '../../reducers/todoSlice';
 

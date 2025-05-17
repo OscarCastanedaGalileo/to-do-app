@@ -4,7 +4,7 @@ import goalsReducer from "./reducers/goalsSlice";
 import logger from "./middleware/logger";
 import checker from "./middleware/checker";
 
-export default configureStore({
+const store = configureStore({
     reducer: {
         todos: todoReducer,
         goals: goalsReducer,
@@ -12,3 +12,5 @@ export default configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(logger, checker)
 });
+
+export default store;
