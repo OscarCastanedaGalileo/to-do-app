@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { todoSlice } from "./todoSlice";
+//import { todoSlice } from "./todoSlice";
 export const goalsSlice = createSlice({
   name: "goals",
   initialState: {
@@ -16,6 +16,6 @@ export const goalsSlice = createSlice({
   },
 });
 
-export const { addGoal } = todoSlice.actions;
+export const { addGoal } = goalsSlice.actions;
 export const selectGoals = (state) => state.goals.value;
-export default todoSlice.reducer;
+export default goalsSlice.reducer;

@@ -4,21 +4,17 @@ import "./Item.scss";
 import { useDispatch } from 'react-redux';
 import {
   removeTodo,
-  addTodo
+  //addTodo
 } from '../../reducers/todoSlice';
 
 
 function Item(props) {
+  const dispatch = useDispatch();
   const removeItem = (e) => {
     e.preventDefault();
       dispatch(removeTodo(props.name));
-    }
-
-  const addItem = (e) => {
-    e.preventDefault();
-    dispatch(addTodo({'name': props.name}));
-  }
-  const dispatch = useDispatch();
+    }  
+  
   return (
     <Card >
       <Card.Body>
@@ -26,15 +22,12 @@ function Item(props) {
         <Card.Text className="fw-bold">
           Description
         </Card.Text>
-        <Card.Text>
-          Elaborar una aplicación web responsiv en la que se pueda llevar el control de mis tareas y metas personales.
-        </Card.Text>
+        <Card.Text>{props.description}</Card.Text>
+               
         <Card.Text className="fw-bold">
           Due Date
         </Card.Text>
-        <Card.Text>
-            31/05/2024
-        </Card.Text>
+        <Card.Text>{props.dueDate}</Card.Text>
       </Card.Body>
       <Card.Body>
         <Button variant="info">Editar</Button>

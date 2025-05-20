@@ -55,10 +55,13 @@ function App() {
           </Row>
           <Row>
             <div className='scrolling'>
-              {
-                todos.map((todo, index) => {
+              {todos.map((todo, index) => {
                   return (
-                    <Item key={index} name={todo.name}/>
+                    <Item 
+                    key={index} 
+                    name={todo.name}
+                    description={todo.description}
+                    dueDate={todo.dueDate}/>
                   )
                 }
                 )
