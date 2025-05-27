@@ -1,8 +1,11 @@
 var express = require('express');
 const  route  = require('.');
 var router = express.Router();
+const Task = require('../models/tasks');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 
-let tasks = [
+/*let tasks = [
     {
         id: 1,
         name: 'Task 1',
@@ -18,37 +21,50 @@ let tasks = [
         name: 'Task 3',
         description: 'Description for Task 3'
     }
-]
-router.get('/getTasks', function(req, res, next) {
-
-    res.status(200).json(tasks);
+]*/
+router.get('/getTasks', async function(req, res) {
+    try {
+        const tasks = await Task.find(); 
+        res.status(200).json(tasks);
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 })
 
-router.delete('/removeTask/:id', function(req, res, next) {
-    const taskId = parseInt(req.params.id);
-    if (!taskId || isNaN(taskId)) {
-        return res.status(400).json({ message: 'Invalid task ID' });
+router.delete('/removeTask/:id', async function(req, res ) {
+    const { id } = req.params;
+    try {
+        const taskId = mongoose.Types.ObjectId(id);
+        const result = await Task.findByIdAndDelete(taskId);
+        if (!result) {
+            return res.status(400).json({ message: 'Invalid Task ID' });
+        }
+        res.status(200).json({ message: 'Task deleted successfully' });
     }
-    const originalLength = tasks.length;
-    tasks = tasks.filter(task => task.id !== taskId);
-    if (tasks.length === originalLength) {
-        return res.status(404).json({ message: 'Task not found' });
+    catch (error) {
+        console.error('Error deleting task:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
-    res.status(200).json({ message: 'Task deleted successfully' });
 });
 
-router.post('/addTask', function(req, res, next) {
+router.post('/addTask', function(req, res) {
     const { name, description } = req.body;
     if (!name || !description) {
         return res.status(400).json({ message: 'Name and description are required' });
     }
-    const newTask = {
-        id: tasks.length + 1,
-        name: req.body.name,
-        description: req.body.description
-    };
-    tasks.push(newTask);
-    res.status(200).json({ message: 'Task added successfully', task: newTask });
+    const newTask = new Task({
+        name: name,
+        description: description
+    });
+    newTask.save()
+        .then(task => {
+            res.status(200).json({ message: 'Task added successfully', task });
+        })
+        .catch(error => {
+            console.error('Error adding task:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        });
 });
 
 module.exports = router;

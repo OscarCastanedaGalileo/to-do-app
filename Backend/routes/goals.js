@@ -1,38 +1,53 @@
 var express = require('express');
 const route = require('.');
 var router = express.Router();
+//const Goal = require('../models/goals');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 
-let goals = [];
 
-router.get('/getGoals', function(req, res, next) {
-   res.status(200).json(goals);
+router.get('/getGoals', async function(req, res) {
+   try {    
+        const goals = await Goal.find(); 
+        res.status(200).json(goals);
+    }
+    catch (error) {
+        console.error('Error fetching goals:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 }
 );
-router.delete('/removeGoal/:id', function(req, res, next) {
-    const goalId = parseInt(req.params.id);
-    if (!goalId || isNaN(goalId)) {
-        return res.status(400).json({ message: 'Invalid goal ID' });
+router.delete('/removeGoal/:id', async function(req, res) {
+   try {
+        const { id } = req.params;
+        const goalId = mongoose.Types.ObjectId(id);
+        const result = await Goal.findByIdAndDelete(goalId);
+        if (!result) {
+            return res.status(400).json({ message: 'Invalid Goal ID' });
+        }
+        res.status(200).json({ message: 'Goal deleted successfully' });
     }
-    const originalLength = goals.length;
-    goals = goals.filter(goal => goal.id !== goalId);
-    if (goals.length === originalLength) {
-        return res.status(404).json({ message: 'Goal not found' });
+    catch (error) {
+        console.error('Error deleting goal:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
-    res.status(200).json({ message: 'Goal deleted successfully' });
 }
 );
-router.post('/addGoal', function(req, res, next) {
+router.post('/addGoal', async function(req, res) {
     const { name, description } = req.body;
     if (!name || !description) {
         return res.status(400).json({ message: 'Name and description are required' });
     }
-    const newGoal = {
-        id: goals.length + 1,
-        name: req.body.name,
-        description: req.body.description
-    };
-    goals.push(newGoal);
-    res.status(200).json({ message: 'Goal added successfully', goal: newGoal });
+    try {
+        const newGoal = await Goal.create({
+            name: name,
+            description: description
+        });
+        res.status(200).json({message: 'Goal added successfully', goal: newGoal });
+} catch (error) {
+        console.error('Error adding goal:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 }
 );
 module.exports = router;
